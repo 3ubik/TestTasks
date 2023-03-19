@@ -8,11 +8,11 @@ function hashOrder(int $number):string
 {
     $numberAsString = strval($number);
     $paddedNumberAsString = str_pad($numberAsString, 7, '0', STR_PAD_LEFT);
-    $reversedNumberAsString = strrev($paddedNumberAsString);
+    $reversedPaddedNumberAsString = strrev($paddedNumberAsString);
 
     $result = '';
     for ($i = 0; $i < 7; $i++) {
-        $digit = intval($reversedNumberAsString[$i]);
+        $digit = intval($reversedPaddedNumberAsString[$i]);
         $resultDigit = 9 - $digit;
         $result .= $resultDigit;
     }
