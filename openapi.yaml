@@ -35,6 +35,12 @@ components:
           type: string
         applicationCode:
           type: string
+      example:
+        errorCode: 400
+        userMessage: The request is missing a required parameter, includes an invalid parameter value, includes a parameter more than once, or is otherwise malformed.
+        devMessage: Check the client_id parameter.
+        more: ""
+        applicationCode: X1234
 
 paths:
   /v1/upload:
