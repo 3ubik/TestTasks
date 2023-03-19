@@ -1,0 +1,160 @@
+openapi: 3.0.0
+info:
+  title: Upload Images API
+  version: 1.0.0
+  description: API for uploading images
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    imagePropertiesSchema:
+      type: object
+      properties:
+        width:
+          type: integer
+        height:
+          type: integer
+        src:
+          type: string
+
+    errorResponseSchema:
+      type: object
+      properties:
+        errorCode:
+          type: integer
+        userMessage:
+          type: string
+        devMessage:
+          type: string
+        more:
+          type: string
+        applicationCode:
+          type: string
+
+paths:
+  /v1/upload:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Upload an image
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  part:
+                    type: integer
+                  etag:
+                    type: string
+                required:
+                  - part
+                  - etag
+              example:
+                - "part": 1,
+                  "etag": "a54357aff0632cce46d942af68356b38"
+                - "part": 2,
+                  "etag": "0c78aef83f66abc1fa1e8477f296d394"
+                - "part": 3,
+                  "etag": "acbd18db4cc2f85cedef654fccc4a4d8"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: Uploaded file ID
+                  timestamp:
+                    type: integer
+                    description: Upload timestamp
+                  source:
+                    type: string
+                    description: Upload Source
+                  folder:
+                    type: string
+                    nullable: true
+                    description: Uploaded file folder
+                  height:
+                    type: integer
+                    description: Uploaded file height
+                  width:
+                    type: integer
+                    description: Uploaded file width
+                  mime:
+                    type: string
+                    description: Uploaded file MIME type
+                  display:
+                    type: object
+                    description: Uploaded file display information
+                    properties:
+                      thumbnail:
+                        $ref: '#/components/schemas/imagePropertiesSchema'
+                      preview:
+                        $ref: '#/components/schemas/imagePropertiesSchema'
+                      square:
+                        $ref: '#/components/schemas/imagePropertiesSchema'
+                      original:
+                        $ref: '#/components/schemas/imagePropertiesSchema'
+                  metadata:
+                    type: object
+                    properties:
+                      gps:
+                        type: string
+                      datetime:
+                        type: integer
+                      name:
+                        type: string
+              example:
+                id: 2058959
+                timestamp: 1516354800
+                source: instagram
+                folder: null
+                height: 1080
+                width: 1080
+                mime: image/jpeg
+                display:
+                  thumbnail:
+                    width: 200
+                    height: 200
+                    src: https://printu.test/media/catalog/cache/vH72u0x7Y4uf0Tdd1j%252F34EFgAluLOcapxlHI0rcqWYDEZi8ph6XztIGW4VGE1cuYIyIE/image.jpg
+                  preview:
+                    width: 800
+                    height: 800
+                    src: https://printu.test/media/catalog/cache/vH72u0x7Y4uf0Tdd1j%252F34EFgAluLOcapxlHI0rcqWYDEZi8ph6XztIsI%252BRE60RFRtAsn/image.jpg
+                  square:
+                    width: 200
+                    height: 200
+                    src: https://printu.test/media/catalog/cache/vH72u0x7Y4uf0Tdd1j%252F34EFgAluLOcapxlHI0rcqWYDEZi8ph6XztIsI%252BRE60RFRtAsn/image.jpg
+                  original:
+                    width: 1080
+                    height: 1080
+                    src: https://dev-printu-net.s3.eu-central-1.amazonaws.com/photobook/12/7/0/2058959.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz
+                metadata:
+                  gps: 52/1, 15/1, 272/100 N 21/1, 1/1, 5851/100 E
+                  datetime: 1516354800
+                  name: IMG_9171.JPG
+
+        '4XX':
+          description: Client Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseSchema'
+        '5XX':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponseSchema'
